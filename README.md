@@ -1,6 +1,6 @@
 # Inferator: Transformer Inference Research on 64GB MacBook
 
-**Three** groundbreaking inference optimization techniques requiring **zero training**, testable in **minutes**, with **major publication potential**.
+**Six** groundbreaking inference optimization techniques requiring **zero training**, testable in **minutes**, with **major publication potential**.
 
 ## 🎯 The Challenge
 
@@ -13,14 +13,14 @@ Traditional research requires massive compute for training. **Not anymore.**
 
 ## 💡 The Solution: Inference-Only Modifications
 
-This repository contains **three** research-grade experiments that modify transformer inference without any training:
+This repository contains **six** research-grade experiments that modify transformer inference without any training:
 
 ### 1. Recursive Attention Refinement (RAR)
 **Increase effective depth by reusing layers iteratively**
 
 - **Speedup**: 1x (same speed)
 - **Quality**: 5-10% improvement on reasoning
-- **Math**: Fixed-point iteration theory
+- **Math**: Fixed-point iteration theory (Banach Fixed-Point Theorem)
 - **Impact**: Shows depth ≠ number of layers
 
 [📖 Read More](./recursive_attention_experiment.md) | [🚀 Quick Start](./QUICKSTART.md)
@@ -45,6 +45,36 @@ This repository contains **three** research-grade experiments that modify transf
 
 [📖 Read More](./KOOPMAN_DMD_EXPERIMENT.md) | [🚀 Quick Start](./QUICKSTART_KOOPMAN.md)
 
+### 4. RLS Weight Editing
+**One-shot knowledge injection into frozen transformers**
+
+- **Speedup**: N/A (model modification)
+- **Quality**: Inject facts without catastrophic forgetting
+- **Math**: Recursive Least Squares, Sherman-Morrison formula
+- **Impact**: "Brain surgery" for LLMs - permanent memory editing
+
+[📖 Read More](./RLS_WEIGHT_EDITING_EXPERIMENT.md) | [🚀 Quick Start](./QUICKSTART_RLS.md)
+
+### 5. Entropic PID Control
+**Thermodynamic sampling with feedback control**
+
+- **Speedup**: 1x (same speed)
+- **Quality**: Maintains target entropy (information density)
+- **Math**: PID control theory, Fisher information, Shannon entropy
+- **Impact**: Goldilocks zone for generation - not too random, not too deterministic
+
+[📖 Read More](./ENTROPIC_PID_CONTROL_EXPERIMENT.md)
+
+### 6. Harmonic Attention Filtering
+**Spectral denoising via Graph Fourier Transform**
+
+- **Speedup**: 1x (same speed)
+- **Quality**: 20-40% energy reduction, reduces hallucinations
+- **Math**: Graph Laplacian, Dirichlet energy, heat equation on graphs
+- **Impact**: First graph-theoretic approach to attention filtering
+
+[📖 Read More](./HARMONIC_ATTENTION_EXPERIMENT.md) | [🚀 Quick Start](./QUICKSTART_HARMONIC.md)
+
 ## 🔬 Why These Are Major Contributions
 
 ### Novel
@@ -66,15 +96,16 @@ This repository contains **three** research-grade experiments that modify transf
 
 ## 📊 Expected Results Summary
 
-| Metric | Recursive Attention | ATCA | Koopman DMD |
-|--------|-------------------|------|-------------|
-| **Speedup** | 1x (same) | 2-3x | ~2x |
-| **Quality Change** | +5 to +10% | -3 to -5% | >90% preserved |
-| **Memory Overhead** | ~0 MB | ~0 MB | ~0 MB |
-| **Training Required** | None | None | None |
-| **Implementation** | 3 lines (C++) | 50 lines (C++) | 200 lines (Python) |
-| **Best Use Case** | Complex reasoning | General text | Layer skipping |
-| **Math Depth** | ★★★★ | ★★★★ | ★★★★★ |
+| Metric | RAR | ATCA | Koopman | RLS | PID | Harmonic |
+|--------|-----|------|---------|-----|-----|----------|
+| **Speedup** | 1x | 2-3x | ~2x | N/A | 1x | 1x |
+| **Quality Change** | +5-10% | -3 to -5% | >90% | Inject facts | Stable entropy | -20-40% energy |
+| **Memory Overhead** | ~0 MB | ~0 MB | ~0 MB | +O(d²) | ~0 MB | ~0 MB |
+| **Training Required** | None | None | None | None | None | None |
+| **Implementation** | 3 lines | 50 lines | 200 lines | 400 lines | 400 lines | 500 lines |
+| **Best Use Case** | Reasoning | Speed | Skipping | Memory edit | Sampling | Denoising |
+| **Math Depth** | ★★★★ | ★★★★ | ★★★★★ | ★★★★ | ★★★★ | ★★★★★ |
+| **Category** | Quality | Speed | Speed | Memory | Sampling | Quality |
 
 ## 🚀 Quick Start (Choose Your Experiment)
 
@@ -101,22 +132,49 @@ python test_koopman.py --mode single
 # Follow QUICKSTART_KOOPMAN.md
 ```
 
-### Run All Three (45 minutes)
+### RLS Weight Editing (15 minutes)
+```bash
+cd ~/inferator
+python test_rls.py --test single
+# Follow QUICKSTART_RLS.md
+```
+
+### Entropic PID Control (10 minutes)
+```bash
+cd ~/inferator
+python -c "from entropic_pid_sampler import *; print('PID sampler ready')"
+# See ENTROPIC_PID_CONTROL_EXPERIMENT.md for usage
+```
+
+### Harmonic Attention Filtering (15 minutes)
+```bash
+cd ~/inferator
+python test_harmonic.py --test basic
+# Follow QUICKSTART_HARMONIC.md
+```
+
+### Run All Six (90 minutes)
 ```bash
 # Setup C++-based experiments
 ./setup_experiment.sh
 ./setup_atca.sh
 
 # Test recursive attention
-python3 test_recursive.py
+python test_recursive.py
 
 # Test ATCA
-python3 test_atca.py
+python test_atca.py
 
 # Test Koopman DMD
 python koopman_dmd.py
 python collect_hidden_states.py --num-prompts 10
 python test_koopman.py --mode all
+
+# Test RLS Weight Editing
+python test_rls.py --test all
+
+# Test Harmonic Attention
+python test_harmonic.py --test all
 ```
 
 ## 📁 Repository Structure
@@ -140,10 +198,34 @@ inferator/
 ├── test_atca.py                           # Testing harness
 ├── analyze_token_difficulty.py            # Analysis tools
 │
+├── 🌊 KOOPMAN DMD EXPERIMENT
+├── KOOPMAN_DMD_EXPERIMENT.md              # Theory & math
+├── QUICKSTART_KOOPMAN.md                  # 15-min guide
+├── koopman_dmd.py                         # DMD implementation
+├── collect_hidden_states.py               # Data collection
+├── test_koopman.py                        # Testing harness
+│
+├── 🧠 RLS WEIGHT EDITING EXPERIMENT
+├── RLS_WEIGHT_EDITING_EXPERIMENT.md       # Theory & math
+├── QUICKSTART_RLS.md                      # 15-min guide
+├── rls_weight_editor.py                   # RLS implementation
+├── test_rls.py                            # Testing harness
+│
+├── 🌡️ ENTROPIC PID CONTROL EXPERIMENT
+├── ENTROPIC_PID_CONTROL_EXPERIMENT.md     # Theory & math
+├── entropic_pid_sampler.py                # PID implementation
+│
+├── 🎵 HARMONIC ATTENTION FILTERING EXPERIMENT
+├── HARMONIC_ATTENTION_EXPERIMENT.md       # Theory & math
+├── QUICKSTART_HARMONIC.md                 # 15-min guide
+├── harmonic_attention_filter.py           # Filtering implementation
+├── test_harmonic.py                       # Testing harness
+│
 └── 📊 SHARED RESOURCES
     ├── llama.cpp/                         # (cloned by setup)
     ├── *.gguf                             # Model files
-    └── *_results.json                     # Experimental results
+    ├── *_results.json                     # Experimental results
+    └── ADDITIONAL_RESEARCH_DIRECTIONS.md  # Future ideas
 ```
 
 ## 🎓 Research Roadmap
